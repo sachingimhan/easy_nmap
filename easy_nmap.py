@@ -38,7 +38,7 @@ def checkifExsistNmap():
 
 
 def waitekey():
-    input("Press any key to continue...")
+    input("Press Enter key to continue...")
 
 
 def info_help():
@@ -76,7 +76,8 @@ def HostScanMenu():
 
 def PortScanMenu():
     menu = """
-    1.
+    1. Scan Single/Multiple Port(s) or Port Range in Host/Hosts
+    2.
     """
 
 
