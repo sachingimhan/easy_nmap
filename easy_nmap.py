@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 
 banner = """
 
@@ -28,6 +29,17 @@ def is_tools():
         if e.errno == os.errno.ENOENT:
             return False
     return True
+
+
+def checkPlatform():
+    if(sys.platform == "linux"):
+        return True
+    elif(sys.platform == "linux2"):
+        return True
+    else:
+        return False
+        print(R + "[!]Error: Sorry This tool is only work for Linux os." + W)
+        exit(0)
 
 
 def checkifExsistNmap():
@@ -246,6 +258,7 @@ def hostDiscovery():
 
 
 def main():
+    checkPlatform()
     os.system("clear")
     print(banner)
     checkifExsistNmap()
