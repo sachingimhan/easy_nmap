@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 
 banner = """
 
@@ -30,6 +31,17 @@ def is_tools():
     return True
 
 
+def checkPlatform():
+    if(sys.platform == "linux"):
+        return True
+    elif(sys.platform == "linux2"):
+        return True
+    else:
+        return False
+        print(R + "[!]Error: Sorry This tool is only work for Linux os." + W)
+        exit(0)
+
+
 def checkifExsistNmap():
     if(is_tools() == False):
         print("[!] Error: nmap not Found!")
@@ -39,6 +51,29 @@ def checkifExsistNmap():
 
 def waitekey():
     input("Press Enter key to continue...")
+
+
+def help():
+    os.system("clear")
+    print(B + banner + Y + """
+    Easy NMAP - Author:DarkMRX
+    Youtube Channel: CyberSL(Sinhala)
+
+    1. If you want to ignore discovery type '-Pn' flag before IP address
+        ex: IP/URL : -Pn 10.10.10.1
+
+    2. If you want to save all the output in to the .txt file type '-oN filename.txt' flag before IP address
+        ex: IP/URL : -oN result.txt 10.10.10.1
+
+    3. If you want to use any othe nmap flag(s) type it before IP address
+        ex: IP/URL : -sV -sV 10.10.10.1
+
+    Thanks for using this tool if you like this tool go and subscribe my youtube channel.
+    https://www.youtube.com/channel/UCKbiSLwJj8yMQ0Mg9AQZfcw
+
+    """ + W)
+    waitekey()
+    main()
 
 
 def info_help():
@@ -63,6 +98,15 @@ def checkHttp(host):
         return True
 
 
+def ServicesDiscoveryMenu():
+    print(Y + """
+    1. Standard Service Detection
+    2. Detect OS and Services (Slow)
+
+    0. Back
+    """ + W)
+
+
 def HostScanMenu():
     print(Y + """
     1. IP/Domain Scan
@@ -75,10 +119,98 @@ def HostScanMenu():
 
 
 def PortScanMenu():
-    menu = """
+    print(Y + """
     1. Scan Single/Multiple Port(s) or Port Range in Host/Hosts
-    2.
-    """
+    2. Scan 100 Most Common Ports (Fast)
+    3. Scan All Ports (65535) (Very Slow)
+    4. Scan TCP Ports
+    5. Scan UDP Ports
+
+    0. Back
+    """ + W)
+
+
+def ServicesDiscovery():
+    ServicesDiscoveryMenu()
+    try:
+        value = int(input("Enter : "))
+        print(
+            B + "\n[#]Hint: IP/URL/IP Range OR Subnet Ex: (10.10.10.1/24) \n" + W)
+        if (value == 1):
+            hosts = str(input("IP/URL : "))
+            if(checkHttp(host=hosts) == True):
+                cmd = "nmap -sV {0}".format(hosts)
+                os.system(cmd)
+                waitekey()
+                ServicesDiscovery()
+        elif(value == 2):
+            hosts = str(input("IP/URL : "))
+            if(checkHttp(host=hosts) == True):
+                cmd1 = "nmap -A {0}".format(hosts)
+                os.system(cmd1)
+                waitekey()
+                ServicesDiscovery()
+        elif(value == 0):
+            main()
+        else:
+            print(R + "[!] Error: Please Enter Valid Number" + W)
+            main()
+    except ValueError as e:
+        print(R + f"[!] Error:{e}" + W)
+
+
+def portDiscovery():
+    PortScanMenu()
+    try:
+        value = int(input("Enter : "))
+        print(
+            B +
+            """[#]Hint: IP/URL/IP Range OR Subnet Ex: (10.10.10.1/24)
+[#]Hint: Port(s),Port Range Ex: 8080,21-59,443""" + W)
+        if(value == 1):
+            hosts = str(input("IP/URL : "))
+            ports = str(input("Port(s) : "))
+            if(checkHttp(host=hosts) == True):
+                cmd = "nmap -v -p {0} {1}".format(ports, hosts)
+                os.system(cmd)
+                waitekey()
+                portDiscovery()
+        elif(value == 2):
+            hosts = str(input("IP/URL : "))
+            if(checkHttp(host=hosts) == True):
+                cmd1 = "nmap -v -F {0}".format(hosts)
+                os.system(cmd1)
+                waitekey()
+                portDiscovery()
+        elif(value == 3):
+            hosts = str(input("IP/URL : "))
+            if(checkHttp(host=hosts) == True):
+                cmd2 = "nmap -v -p- {0}".format(hosts)
+                os.system(cmd2)
+                waitekey()
+                portDiscovery()
+        elif(value == 4):
+            hosts = str(input("IP/URL : "))
+            if(checkHttp(host=hosts) == True):
+                cmd3 = "nmap -v -sT {0}".format(hosts)
+                os.system(cmd3)
+                waitekey()
+                portDiscovery()
+        elif(value == 5):
+            hosts = str(input("IP/URL : "))
+            ports = str(input("Port(s) : "))
+            if(checkHttp(host=hosts) == True):
+                cmd4 = "nmap -v -sU -p {0} {1}".format(ports, hosts)
+                os.system(cmd4)
+                waitekey()
+                portDiscovery()
+        elif(value == 0):
+            main()
+        else:
+            print(R + "[!] Error: Please Enter Valid Number" + W)
+            main()
+    except ValueError as e:
+        print(R + f"[!] Error:{e}" + W)
 
 
 def hostDiscovery():
@@ -91,7 +223,7 @@ def hostDiscovery():
         if(value == 1):
             hosts = str(input("IP/URL : "))
             if(checkHttp(host=hosts) == True):
-                cmd = "nmap {0}".format(hosts)
+                cmd = "nmap -v {0}".format(hosts)
                 os.system(cmd)
                 waitekey()
                 hostDiscovery()
@@ -105,7 +237,7 @@ def hostDiscovery():
         elif(value == 3):
             hosts = str(input("IP/URL : "))
             if(checkHttp(host=hosts) == True):
-                cmd2 = "nmap -O {0}".format(hosts)
+                cmd2 = "nmap -v -O {0}".format(hosts)
                 os.system(cmd2)
                 waitekey()
                 hostDiscovery()
@@ -126,6 +258,7 @@ def hostDiscovery():
 
 
 def main():
+    checkPlatform()
     os.system("clear")
     print(banner)
     checkifExsistNmap()
@@ -134,8 +267,14 @@ def main():
     try:
         if(value == 1):
             hostDiscovery()
+        elif(value == 2):
+            portDiscovery()
+        elif(value == 3):
+            ServicesDiscovery()
+        elif(value == 98):
+            help()
         elif(value == 99):
-            print("Thank for using Easy Nmap. ~DarkMRX~")
+            print(G + "Thank for using Easy Nmap.\n ~DarkMRX~" + W)
             exit(0)
         else:
             print(R + "[!] Error: Please Enter Valid Number" + W)
